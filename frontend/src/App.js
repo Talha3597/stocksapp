@@ -14,6 +14,8 @@ import UpdateUser from './screens/UpdateUser'
 import ViewUser from './screens/ViewUser'
 import Stocks from './screens/Stocks'
 import Alerts from './screens/Alerts'
+import Portfolio from './screens/Portfolio'
+import AddPortfolio from './screens/AddPortfolio'
 import AddAlert from './screens/AddAlert'
 import SearchData from './screens/SearchData'
 import SearchBox from './components/SearchBox'
@@ -32,13 +34,15 @@ function App() {
     <Route path="/admin/userlist" element={<Users />} />
     <Route path="/forgotpassword" element={<ForgotPassword />} />
     <Route path="/profile" element={<Profile />} />
+    <Route path="/portfolio" element={<Portfolio />} />
+    <Route path="/addportfolio" element={<AddPortfolio />} />
     <Route path="/updateprofile/:id" element={<UpdateProfile />} />
     <Route path="/admin/updateuser/:id" element={<UpdateUser />} />
     <Route path="/admin/viewuser/:id" element={<ViewUser />} />
+    <Route path="/stocks/:ticker" element={<Stocks />} />
     <Route path="/stocks" element={<Stocks />} />
-    <Route path="/admin/alerts" element={<Alerts />} />
-    <Route path="/admin/alerts/addalert" element={<AddAlert />} />
-    <Route path="/search/:keyword" element={<SearchData/>} />
+    <Route path="/alerts" element={<Alerts />} />
+    <Route path="/alerts/addalert" element={<AddAlert />} />
     </Routes>
     </Container>
     </main>

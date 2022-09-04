@@ -4,7 +4,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import axios from 'axios'
-const RegisterScreen = ({ location, history }) => {
+const RegisterScreen = () => {
   const [username, setUserName] = useState(" ")
   const [address, setAddress] = useState(" ")
   const [phoneNo, setPhoneNo] = useState(" ")
@@ -59,12 +59,12 @@ const RegisterScreen = ({ location, history }) => {
                     }, 5000);
                     return setError('Passwords do not match')
                   }
-                const {data}=await axios.post("http://localhost:5000/api/auth/register",{username,email,password,address,phoneNo},config)    
+                const {data}=await axios.post("/api/auth/register",{username,email,password,address,phoneNo},config)    
                 setTimeout(()=>{
                    
                    freeSpace() 
                     },4000)
-                return setMessage(data.data)    
+                return window.location='/login'    
 }     
 
 

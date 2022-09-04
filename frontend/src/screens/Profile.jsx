@@ -5,7 +5,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import axios from 'axios'
-
+import logoutHandler from '../components/logout'
 
 const Profile = () => {
     
@@ -26,7 +26,7 @@ const Profile = () => {
         }
    }
     
-    axios.get('http://localhost:5000/api/auth/user',{ params: {id,config} },)
+    axios.get('/api/auth/user',{ params: {id,config} },)
         .then(res=>{
             
             setUserName(res.data.username)
@@ -34,6 +34,11 @@ const Profile = () => {
             setEmail(res.data.email)
             setAddress(res.data.address)
         })
+
+        .catch((err)=>{
+             logoutHandler()
+        }
+        )
        
 
 },[id]

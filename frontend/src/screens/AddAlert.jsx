@@ -3,6 +3,9 @@ import FormContainer from '../components/FormContainer'
 import { Card ,DropdownButton,Dropdown,Form,Button} from 'react-bootstrap'
 import Message from '../components/Message'
 import axios from 'axios'
+import logoutHandler from '../components/logout'
+
+      
 const AddAlert = () => {
     const [trend,setTrend]=useState('Trend Alert');
     const [change,setChange]=useState('Change To');
@@ -12,9 +15,10 @@ const AddAlert = () => {
     const [note,setNote]=useState('');
     const [error,setError]=useState('');
     const [message,setMessage]=useState('');
+    const id= localStorage.getItem("id")
     const freeSpace=()=>{
-        setTrend('')
-        setChange('')
+        setTrend('Trend Alert')
+        setChange('Change To')
         setSymbol('')
         setTarget('')
         setSubject('')
@@ -30,22 +34,29 @@ const AddAlert = () => {
   }
   const onSubmit=(e)=>{
     e.preventDefault()
-    if( trend !=='Trend Alert' && change !=='Change To'){
-        const {data}=axios.post('http://localhost:5000/api/addAlert',{trend,change,symbol,target,subject,note})
-   .then(
-        setTimeout(()=>{
-            setError('')
+    const config= {
+      headers:{
           
-            },4000),
-             setMessage(data.message)
-
+          Authorization:`Bearer ${localStorage.getItem("authToken")}`,
+          role:localStorage.getItem("role")
+      }
+ }
+    if( trend !=='Trend Alert' && change !=='Change To'){
+        const {data}=axios.post('/api/addAlert',{trend,change,symbol,target,subject,note,id},{params:{config}})
+   .then((data)=>{
+        setTimeout(()=>{
+            setMessage('')
+             freeSpace()
+            },4000)
+             setMessage(data.data.message)
+          }  
       )
-      .catch(setTimeout(()=>{
-        setError('')
-      
-        },4000),
-         setError('Error! Alert Not Generated'))
+      .catch((err)=>{
+        logoutHandler()
+   }
+   )
 
+      
     }
     else{
         setTimeout(()=>{
@@ -75,20 +86,16 @@ const AddAlert = () => {
         <Dropdown.Item eventKey='Trend Alert'>Clear</Dropdown.Item>
         <Dropdown.Item eventKey="Add Price Alert">Add Price Alert</Dropdown.Item>
         <Dropdown.Item eventKey="Add Activity Alert">Add Activity Alert</Dropdown.Item>
-        <Dropdown.Item eventKey="Add Data Alert">Add Data Alert</Dropdown.Item>
-        <Dropdown.Item eventKey="Add Custom RS Alert">Add Custom RS Alert</Dropdown.Item>
       </DropdownButton>&nbsp;&nbsp;
       <DropdownButton variant="success" id="dropdown-item-button" title={change}  onSelect={handleChangeSelect}>
         <Dropdown.Item eventKey='Change To'>Clear</Dropdown.Item>
       <Dropdown.Item eventKey='above'>Above</Dropdown.Item>
       <Dropdown.Item eventKey="blow">Below</Dropdown.Item>
-      <Dropdown.Item eventKey="cross">Cross</Dropdown.Item>
-      <Dropdown.Item eventKey="equal">Equal</Dropdown.Item>
       <Dropdown.Item eventKey="contains">Contains</Dropdown.Item>
     </DropdownButton>&nbsp;&nbsp;
-    <Form.Control type='text'value={target} required
+    <Form.Control type='number'value={target} required
             onChange={(e) => setTarget(e.target.value)}
-             placeholder="Target Current Value: -34.21"></Form.Control>
+             placeholder="Target "></Form.Control>
         </div>
         <br/>
         <Form.Group>

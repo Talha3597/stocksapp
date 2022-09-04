@@ -4,7 +4,6 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import axios from 'axios'
-
 const LoginScreen = ({history}) => {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
@@ -33,7 +32,7 @@ let authToken=localStorage.getItem("authToken")
               }
       }
           try {
-              const {data}= await axios.post("http://localhost:5000/api/auth/login",{email,password},config)
+              const {data}= await axios.post("/api/auth/login",{email,password},config)
               if(data.token){localStorage.setItem("authToken",data.token)
               if(data.role == 'admin')
               {

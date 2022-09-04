@@ -9,7 +9,6 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [password, setPassword] = useState('')
 const forgotPasswordHandler = async (e) => {
     e.preventDefault();
 
@@ -21,7 +20,7 @@ const forgotPasswordHandler = async (e) => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/forgotpassword",
+        "/api/auth/forgotpassword",
         { email },
         config
       );

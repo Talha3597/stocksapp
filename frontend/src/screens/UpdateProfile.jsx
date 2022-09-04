@@ -5,6 +5,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import axios from 'axios'
+import logoutHandler from '../components/logout'
 
 
 const UpdateProfile = () => {
@@ -30,11 +31,14 @@ const UpdateProfile = () => {
         }
    }
    
-         axios.get('http://localhost:5000/api/auth/user' ,{ params: {id,config} })
+         axios.get('/api/auth/user' ,{ params: {id,config} })
         .then(res=>{
             setUserName(res.data.username)
             setPhoneNo(res.data.phoneNo)
             setAddress(res.data.address)
+        })
+        .catch((err)=>{
+          logoutHandler()
         })
        
  
@@ -67,7 +71,7 @@ const onSubmit=async(e)=>
         return setError('Passwords do not match')
       }
       
-      await axios.put(`http://localhost:5000/api/auth/updateProfile/${id}`,{id,password,username,address,phoneNo},{params:{config}})
+      await axios.put(`/api/auth/updateProfile/${id}`,{id,password,username,address,phoneNo},{params:{config}})
       setTimeout(()=>{
           setMessage("")
           window.location=`/updateprofile/${id}`
@@ -77,15 +81,18 @@ const onSubmit=async(e)=>
       
     } 
     else if(username !=='' || address !=='' || phoneNo!==''){
-        await axios.put(`http://localhost:5000/api/auth/updateProfile/${id}`,{id,username,address,phoneNo},{params:{config}})
-      setTimeout(()=>{
+        await axios.put(`/api/auth/updateProfile/${id}`,{id,username,address,phoneNo},{params:{config}})
+      .then(()=>{setTimeout(()=>{
           setMessage("")
-          history(`/updateprofile/${id}`)
+          window.location=`/updateprofile/${id}`
 
 
           
           },4000)
-          return setMessage("User Updated")
+          return setMessage("User Updated")})
+      .catch((err)=>{
+            logoutHandler()}
+      )
       
     } 
 }     

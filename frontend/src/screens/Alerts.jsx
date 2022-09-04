@@ -1,44 +1,83 @@
 import React,{useState,useEffect} from 'react'
 import { Card,Button,Dropdown,Form,Table } from 'react-bootstrap' 
 import axios from 'axios'
+import logoutHandler from '../components/logout'
+
+        
+
 const Alerts = () => {
     let [search,setSearch]=useState('')
     let [data,setData]=useState([])
-   
+   const id=localStorage.getItem('id')
     const removeData=(id)=>{
         let flag= window.confirm("Delete  record!")
       if(flag)
-      { 
-         axios.delete(`http://localhost:5000/api/deleteAlert`, { params: {id} }) 
+      { const config= {
+        headers:{
+            
+            Authorization:`Bearer ${localStorage.getItem("authToken")}`,
+            role:localStorage.getItem("role")
+        }
+   }
+         axios.delete(`/api/deleteAlert`, { params: {id,config} }) 
         .then(res => {
             const del = data.filter(data => id !== data._id)
             setData(del)
            
         })
+        .catch((err)=>{
+          logoutHandler()
+     }
+     )
       }
     }
 const submitHandler=(e)=>{
   e.preventDefault()
+  const config= {
+    headers:{
+        
+        Authorization:`Bearer ${localStorage.getItem("authToken")}`,
+        role:localStorage.getItem("role")
+    }
+}
   if(search.startsWith('-')){
-    axios.get('http://localhost:5000/api/alerts')
+    axios.get('/api/alerts',{params:{id,config}})
     .then((data)=>{
            setData(data.data)
             
         })
+        .catch((err)=>{
+          logoutHandler()
+     }
+     )
   }else{
-  axios.get('http://localhost:5000/api/alerts',{params:{search}})
+  axios.get('/api/alerts',{params:{search,id,config}})
   .then((data)=>{
          setData(data.data)
           
-      })}
+      }).catch((err)=>{
+        logoutHandler()
+   }
+   )
+    }
 }
 useEffect(()=>{
-  axios.get('http://localhost:5000/api/alerts')
+  const config= {
+    headers:{
+        
+        Authorization:`Bearer ${localStorage.getItem("authToken")}`,
+        role:localStorage.getItem("role")
+    }
+}
+  axios.get('/api/alerts',{params:{id,config}})
   .then((data)=>{
          setData(data.data)
-         console.log(data.data)
           
       })
+      .catch((err)=>{
+        logoutHandler()
+   }
+   )
 },[])
 
   return (
@@ -49,10 +88,8 @@ useEffect(()=>{
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="/admin/alerts/addalert">Add Price Alert</Dropdown.Item>
-        <Dropdown.Item href="/admin/alerts/addalert">Add Activity Alert</Dropdown.Item>
-        <Dropdown.Item href="/admin/alerts/addalert">Add Data Alert</Dropdown.Item>
-        <Dropdown.Item href="/admin/alerts/addalert">Add Custom RS Alert</Dropdown.Item>
+        <Dropdown.Item href="/alerts/addalert">Add Price Alert</Dropdown.Item>
+        <Dropdown.Item href="/alerts/addalert">Add Activity Alert</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
 </div>
@@ -156,12 +193,12 @@ useEffect(()=>{
           <Card.Title as='h3'>
             <strong>Data Alerts</strong>
           </Card.Title> </div>
-            Total Entries:{data.filter(item=>item.trend=='Add Point Alert').length}<div className='float-right'>
+            Total Entries:{data.filter(item=>item.trend=='Add Data Alert').length}<div className='float-right'>
             <Form onSubmit={submitHandler} className='form-inline' >
       <Form.Control
         type='text'
         name='q'
-        onChange={(e) => setSearch(e.target.value+'-Add Point Alert')}
+        onChange={(e) => setSearch(e.target.value+'-Add Data Alert')}
         placeholder='Search ...'
         className='mr-sm-2 ml-sm-5'
       ></Form.Control>
@@ -180,7 +217,7 @@ useEffect(()=>{
             </tr>
       </thead>
       <tbody>
-      {data.filter(item=>item.trend=='Add Point Alert').map((item) => {  
+      {data.filter(item=>item.trend=='Add Data Alert').map((item) => {  
                             return <tr key={item._id}> 
                                 <td>{item.symbol}</td> 
                                 <td>{item.change}</td>  
@@ -203,12 +240,12 @@ useEffect(()=>{
             <strong>Custom RS Alerts</strong>
           </Card.Title>
         </div>
-            Total Entries:{data.filter(item=>item.trend=='Add RS Custom Alert').length}<div className='float-right'>
+            Total Entries:{data.filter(item=>item.trend=='Add Custom RS Alert').length}<div className='float-right'>
             <Form onSubmit={submitHandler} className='form-inline' >
       <Form.Control
         type='text'
         name='q'
-        onChange={(e) => setSearch(e.target.value+'-Add RS Custom Alert')}
+        onChange={(e) => setSearch(e.target.value+'-Add Custom RS Alert')}
         placeholder='Search ...'
         className='mr-sm-2 ml-sm-5'
       ></Form.Control>
@@ -227,7 +264,7 @@ useEffect(()=>{
             </tr>
       </thead>
       <tbody>
-      {data.filter(item=>item.trend=='Add RS Custom Alert').map((item) => {  
+      {data.filter(item=>item.trend=='Add Custom RS Alert').map((item) => {  
                             return <tr key={item._id}> 
                                 <td>{item.symbol}</td> 
                                 <td>{item.change}</td>  

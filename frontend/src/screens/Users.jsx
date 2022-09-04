@@ -4,6 +4,9 @@ import { Table,Button,Form} from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
 import axios from 'axios';
 import {Link} from 'react-router-dom'
+import logoutHandler from '../components/logout'
+
+       
 
 const Users =()=>{
     let[gdata,setData] =useState([])
@@ -19,12 +22,16 @@ const Users =()=>{
     {
        
        
-        await axios.delete(`http://localhost:5000/api/auth/user`, { params: {id,config} }) 
+        await axios.delete(`/api/auth/user`, { params: {id,config} }) 
         .then(res => {
             const del = gdata.filter(gdata => id !== gdata._id)
             setData(del)
            
         })
+        .catch((err)=>{
+          logoutHandler()
+     }
+     )
 
     }
     const removeData = async(id) => {
@@ -56,12 +63,16 @@ const Users =()=>{
             }
        }
         async function fetchData(){   
-            await axios.get('http://localhost:5000/api/auth/users', { params: {search,employeeNo,config} })
+            await axios.get('/api/auth/users', { params: {search,employeeNo,config} })
             .then(res=>{
                 setData(res.data)
 
                 
             })
+            .catch((err)=>{
+              logoutHandler()
+         }
+         )
            }
            
      fetchData()

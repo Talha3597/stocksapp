@@ -7,9 +7,9 @@ const SearchBox = () => {
   const submitHandler = (e) => {
     e.preventDefault()
     if (keyword.trim()) {
-      window.location=`/search/${keyword}`
+      window.location=`/stocks/${keyword}`
     } else {
-      window.location='/'
+      window.location='/stocks'
     }
   }
 

@@ -45,6 +45,7 @@ role:{
     trim:true,
     
 },
+tickers:[String],
 signedToken:String,
 resetPasswordToken:String,
 resetpasswordExpire:Date,

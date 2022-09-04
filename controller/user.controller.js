@@ -11,7 +11,7 @@ exports.register=async (req,res,next)=>
     const {username,email,password,address,phoneNo}=req.body
     const user1=await  User.findOne({email:email})
 
-    let role='admin'
+    let role='user'
   
     if(user1)
         {    

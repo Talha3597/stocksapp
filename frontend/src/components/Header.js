@@ -1,21 +1,18 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Route } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'
 import SearchBox from './SearchBox'
+import logoutHandler from './logout'
+import axios from 'axios'
 
 const Header = ({history}) => {
 let authToken=localStorage.getItem("authToken")
 let role=localStorage.getItem("role")
 let username=localStorage.getItem("username")
 
-const logoutHandler=()=>{
-  localStorage.removeItem("authToken")
-  localStorage.removeItem("username")
-  localStorage.removeItem("id")
-  localStorage.removeItem("role")
-  window.location='/login'
-}
+
+
 
 
   return (
@@ -36,6 +33,15 @@ const logoutHandler=()=>{
                 <NavDropdown title={username} id='username'>
                   <LinkContainer to='/profile'>
                     <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/stocks'>
+                    <NavDropdown.Item>Stocks</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/alerts'>
+                    <NavDropdown.Item>Alerts</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/portfolio'>
+                    <NavDropdown.Item>Portfolio</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Item onClick={logoutHandler}>
                     Logout
@@ -64,13 +70,7 @@ const logoutHandler=()=>{
                   <LinkContainer to='/admin/dashboard'>
                     <NavDropdown.Item>Dashboard</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to='/stocks'>
-                    <NavDropdown.Item>Stocks</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to='/admin/alerts'>
-                    <NavDropdown.Item>Alerts</NavDropdown.Item>
-                  </LinkContainer>
-                 
+                  
                 </NavDropdown>
               }
             </Nav>

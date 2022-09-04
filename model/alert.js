@@ -28,7 +28,18 @@ const AlertSchema=mongoose.Schema({
         type:String,
         trim:true,
     },
-    
+    userEmail:{
+        type:String,
+        trim:true,
+    },
+    userId:{
+        type:String,
+        trim:true,
+    },
+    expiredAt: {
+        type:String,
+        default: null
+    }
    
 },
 { timestamps: true });
