@@ -1,7 +1,7 @@
 const Alert = require("../model/alert");
 const moment = require('moment')
 const axios = require('axios')
-
+const sendEmail =require('./sendEmail');;
 const filterAlerts = async (symbol) => {    
     const alerts = await Alert.find();
     console.log('alerts : ', alerts)
@@ -74,12 +74,20 @@ const checkDailyAlerts = async (symbol) => {
             asyncForEach(currentAlerts, async (alert) => {
                 if(alert.change === 'contains' && alert.expiredAt === null) {
                     if((calculateRollingEnergy(1, 6, dailyStockStats) == 1) && (calculateRollingEnergy(0, 6, dailyStockStats) == 0) || (calculateRollingEnergy(1, 6, dailyStockStats) == 0) && (calculateRollingEnergy(0, 6, dailyStockStats) == 1)) {
-                        console.log('contains alert for ', symbol)
+                          sendEmail({
+                            to:alert.userEmail,
+                            subject:alert.subject,
+                            text:alert.note
+                        }) 
                         await Alert.findByIdAndDelete(alert._id)
                     }
                 } else if(alert.change === 'contains' && moment(alert.expiredAt).isAfter(moment(now)) && alert.expiredAt !== null){
                     if((calculateRollingEnergy(1, 6, dailyStockStats) == 1) && (calculateRollingEnergy(0, 6, dailyStockStats) == 0) || (calculateRollingEnergy(1, 6, dailyStockStats) == 0) && (calculateRollingEnergy(0, 6, dailyStockStats) == 1)) {
-                        console.log('contains alert for ', symbol)
+                        sendEmail({
+                            to:alert.userEmail,
+                            subject:alert.subject,
+                            text:alert.note
+                        }) 
                     }
                 } else if(alert.change === 'contains' && moment(alert.expiredAt).isBefore(moment(now)) && alert.expiredAt !== null) {
                     await Alert.findByIdAndDelete(alert._id)
@@ -105,15 +113,31 @@ const checkIntraDayAlerts = async (symbol) => {
             
             asyncForEach(currentAlerts, async (alert) => {
                 if(alert.change === 'above' && parseFloat(Object.values(currentIntraDayValue)[3]) > alert.target && alert.expiredAt === null) {
-                    console.log('above alert for ', symbol)
+                    sendEmail({
+                        to:alert.userEmail,
+                        subject:alert.subject,
+                        text:alert.note
+                    }) 
                     await Alert.findByIdAndDelete(alert._id)
                 } else if(alert.change === 'below' && parseFloat(Object.values(currentIntraDayValue)[3]) < alert.target && alert.expiredAt === null) {
-                    console.log('below alert for ', symbol)
+                    sendEmail({
+                        to:alert.userEmail,
+                        subject:alert.subject,
+                        text:alert.note
+                    }) 
                     await Alert.findByIdAndDelete(alert._id)
                 } else if(alert.change === 'above' && parseFloat(Object.values(currentIntraDayValue)[3]) > alert.target && moment(alert.expiredAt).isAfter(moment(now)) && alert.expiredAt !== null) {
-                    console.log('below alert for ', symbol)
+                    sendEmail({
+                        to:alert.userEmail,
+                        subject:alert.subject,
+                        text:alert.note
+                    }) 
                 } else if(alert.change === 'below' && parseFloat(Object.values(currentIntraDayValue)[3]) < alert.target && moment(alert.expiredAt).isAfter(moment(now)) && alert.expiredAt !== null) {
-                    console.log('below alert for ', symbol)
+                    sendEmail({
+                        to:alert.userEmail,
+                        subject:alert.subject,
+                        text:alert.note
+                    }) 
                 } else if(alert.change === 'below' && moment(alert.expiredAt).isBefore(moment(now)) && alert.expiredAt !== null){
                     await Alert.findByIdAndDelete(alert._id)
                 } else if(alert.change === 'above' && moment(alert.expiredAt).isBefore(moment(now)) && alert.expiredAt !== null){
@@ -133,3 +157,4 @@ module.exports = {
     checkDailyAlerts,
     checkIntraDayAlerts
 }
+
